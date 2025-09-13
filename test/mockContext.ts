@@ -18,6 +18,7 @@ const defaultInputs = {
   assigneeTrigger: "",
   labelTrigger: "",
   branchPrefix: "claude/",
+  generateDescription: false,
   useStickyComment: false,
   useCommitSigning: false,
   botId: String(CLAUDE_APP_BOT_ID),

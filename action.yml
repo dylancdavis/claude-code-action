@@ -24,9 +24,13 @@ inputs:
     required: false
     default: "claude/"
   branch_name_template:
-    description: "Template for branch naming. Available variables: {{prefix}}, {{entityType}}, {{entityNumber}}, {{timestamp}}, {{year}}, {{month}}, {{day}}, {{hour}}, {{minute}}, {{sha}}, {{label}}, {{description}}. The {{label}} variable uses the first label from the issue/PR, falling back to {{entityType}} if no labels exist. The {{description}} variable uses the first 3 words of the issue/PR title converted to kebab-case. Default: '{{prefix}}{{entityType}}-{{entityNumber}}-{{timestamp}}'"
+    description: "Template for branch naming. Available variables: {{prefix}}, {{entityType}}, {{entityNumber}}, {{timestamp}}, {{year}}, {{month}}, {{day}}, {{hour}}, {{minute}}, {{sha}}, {{label}}, {{description}}, {{claudeDescription}}. The {{label}} variable uses the first label from the issue/PR, falling back to {{entityType}} if no labels exist. The {{description}} variable uses the first 3 words of the issue/PR title converted to kebab-case. The {{claudeDescription}} variable uses Claude to generate a 3-4 word intelligent description (requires generate_description: true). Default: '{{prefix}}{{entityType}}-{{entityNumber}}-{{timestamp}}'"
     required: false
     default: ""
+  generate_description:
+    description: "Enable Claude-generated branch descriptions. When true, Claude will analyze the issue/PR and generate an intelligent 3-4 word description for use in branch naming templates via {{claudeDescription}}."
+    required: false
+    default: "false"
   allowed_bots:
     description: "Comma-separated list of allowed bot usernames, or '*' to allow all bots. Empty string (default) allows no bots."
     required: false
@@ -155,6 +159,7 @@ runs:
         BASE_BRANCH: ${{ inputs.base_branch }}
         BRANCH_PREFIX: ${{ inputs.branch_prefix }}
         BRANCH_NAME_TEMPLATE: ${{ inputs.branch_name_template }}
+        GENERATE_DESCRIPTION: ${{ inputs.generate_description }}
         OVERRIDE_GITHUB_TOKEN: ${{ inputs.github_token }}
         ALLOWED_BOTS: ${{ inputs.allowed_bots }}
         ALLOWED_NON_WRITE_USERS: ${{ inputs.allowed_non_write_users }}
@@ -168,6 +173,10 @@ runs:
         ADDITIONAL_PERMISSIONS: ${{ inputs.additional_permissions }}
         CLAUDE_ARGS: ${{ inputs.claude_args }}
         ALL_INPUTS: ${{ toJson(inputs) }}
+
+        # API credentials for description generation
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic_api_key }}
+        CLAUDE_CODE_OAUTH_TOKEN: ${{ inputs.claude_code_oauth_token }}
 
     - name: Install Base Action Dependencies
       if: steps.prepare.outputs.contains_trigger == 'true'

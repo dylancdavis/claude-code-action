@@ -36,6 +36,7 @@ export interface BranchTemplateVariables {
   sha?: string;
   label?: string;
   description?: string;
+  claudeDescription?: string;
 }
 
 /**
@@ -69,6 +70,7 @@ export function createBranchTemplateVariables(
   sha?: string,
   label?: string,
   title?: string,
+  claudeDescription?: string,
 ): BranchTemplateVariables {
   const now = new Date();
 
@@ -85,6 +87,7 @@ export function createBranchTemplateVariables(
     sha: sha?.substring(0, 8), // First 8 characters of SHA
     label: label || entityType, // Fall back to entityType if no label
     description: title !== undefined ? extractDescription(title) : undefined,
+    claudeDescription: claudeDescription,
   };
 }
 
@@ -99,6 +102,7 @@ export function generateBranchName(
   sha?: string,
   label?: string,
   title?: string,
+  claudeDescription?: string,
 ): string {
   const variables = createBranchTemplateVariables(
     branchPrefix,
@@ -107,6 +111,7 @@ export function generateBranchName(
     sha,
     label,
     title,
+    claudeDescription,
   );
 
   let branchName: string;

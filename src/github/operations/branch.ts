@@ -13,6 +13,7 @@ import type { GitHubPullRequest } from "../types";
 import type { Octokits } from "../api/client";
 import type { FetchDataResult } from "../data/fetcher";
 import { generateBranchName } from "../../utils/branch-template";
+import { generateDescriptionWithFallback } from "../../utils/claude-description";
 
 /**
  * Extracts the first label from GitHub data, or returns undefined if no labels exist
@@ -113,8 +114,26 @@ export async function setupBranch(
     // Extract first label from GitHub data
     const firstLabel = extractFirstLabel(githubData);
 
-    // Extract title from GitHub data
+    // Extract title and body from GitHub data
     const title = githubData.contextData.title;
+    const body = githubData.contextData.body || "";
+
+    // Generate Claude description if enabled
+    let claudeDescription: string | undefined;
+    if (context.inputs.generateDescription) {
+      try {
+        claudeDescription = await generateDescriptionWithFallback(
+          title,
+          body,
+          entityType as "issue" | "pr",
+          true,
+        );
+        console.log(`Generated Claude description: "${claudeDescription}"`);
+      } catch (error) {
+        console.warn("Failed to generate Claude description:", error);
+        claudeDescription = undefined;
+      }
+    }
 
     // Generate branch name using template or default format
     const newBranch = generateBranchName(
@@ -125,6 +144,7 @@ export async function setupBranch(
       sourceSHA,
       firstLabel,
       title,
+      claudeDescription,
     );
 
     // For commit signing, defer branch creation to the file ops server
