@@ -4,10 +4,12 @@
  * Branch name template parsing and variable substitution utilities
  */
 
+const NUM_DESCRIPTION_WORDS = 3;
+
 /**
- * Extracts the first three words from a title and converts them to kebab-case
+ * Extracts the first `numWords` words from a title and converts them to kebab-case
  */
-function extractDescription(title: string): string {
+function extractDescription(title: string, numWords: number = NUM_DESCRIPTION_WORDS): string {
   if (!title || title.trim() === "") {
     return "";
   }
@@ -15,7 +17,7 @@ function extractDescription(title: string): string {
   return title
     .trim() // Remove leading/trailing whitespace
     .split(/\s+/) // Split on whitespace
-    .slice(0, 3) // Take first 3 words
+    .slice(0, numWords) // Only first `numWords` words
     .join("-") // Join with hyphens
     .toLowerCase() // Convert to lowercase
     .replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric except hyphens
