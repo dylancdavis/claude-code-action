@@ -15,11 +15,11 @@ function extractDescription(title: string, numWords: number = NUM_DESCRIPTION_WO
   }
 
   return title
-    .trim() // Remove leading/trailing whitespace
-    .split(/\s+/) // Split on whitespace
+    .trim()
+    .split(/\s+/)
     .slice(0, numWords) // Only first `numWords` words
-    .join("-") // Join with hyphens
-    .toLowerCase() // Convert to lowercase
+    .join("-")
+    .toLowerCase()
     .replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric except hyphens
     .replace(/-+/g, "-") // Replace multiple hyphens with single
     .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
