@@ -4,7 +4,7 @@
  * Branch name template parsing and variable substitution utilities
  */
 
-const NUM_DESCRIPTION_WORDS = 3;
+const NUM_DESCRIPTION_WORDS = 5;
 
 /**
  * Extracts the first `numWords` words from a title and converts them to kebab-case
